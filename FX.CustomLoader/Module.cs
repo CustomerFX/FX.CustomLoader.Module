@@ -66,7 +66,7 @@ namespace FX.CustomLoader
 
         private string GetVirtualPath(string PhysicalPath)
         {
-            return PhysicalPath.Replace(HttpContext.Current.Server.MapPath("~/"), "~/").Replace(@"\", "/");
+            return PhysicalPath.Replace(HttpContext.Current.Server.MapPath("~/"), "").Replace(@"\", "/");
         }
 
         private Page CurrentPage
