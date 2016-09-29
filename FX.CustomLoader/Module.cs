@@ -49,7 +49,7 @@ namespace FX.CustomLoader
             var files = GetFiles(StyleFolder, "css");
             foreach (var file in files)
             {
-                CurrentPage.Header.Controls.Add(new LiteralControl(string.Format("<link rel='stylesheet' type'text/css' href='{0}'/>", GetVirtualPath(file))));
+                CurrentPage.Header.Controls.Add(new LiteralControl(string.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\" />", GetVirtualPath(file))));
             }
         }
 
