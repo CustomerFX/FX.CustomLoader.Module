@@ -9,4 +9,4 @@ In a nutshell, this is how it works. There are folders you place your scripts an
 3. Look in the SlxClient/SupportFiles and you'll see a folder called "Custom" which contains three subfolders named "Scripts", "Style", and "Modules"
 4. Drop any javascript files in the SupportFiles/Custom/Scripts folder (you can organize things with subfolders if you'd like)
 5. Drop any CSS style files in the SupportFiles/Custom/Style folder (you can organize things with subfolders if you'd like)
-6. Drop any javascript to be loaded as AMD modules in the SupportFiles/Custom/Modules folder. Place each module in a separate subdirectory. If the module includes a "main.js" file it will get loaded automatically at runtime.
+6. Drop any javascript to be loaded as AMD modules in the SupportFiles/Custom/Modules folder. Place each module in a separate subdirectory. The subdirectory name will be used as the module name. If the module includes a "main.js" file it will get loaded automatically at runtime.
