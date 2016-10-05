@@ -13,12 +13,17 @@ namespace FX.CustomLoader
         public Module()
         {
             this.ScriptFolder = "~/Custom/Scripts";
+            this.ModulesFolder = "~/Custom/Modules";
             this.StyleFolder = "~/Custom/Style";
         }
 
         [DisplayName("Script Folder")]
         [Description("The root folder where custom javascript files are located. Default value is ~/Custom/Scripts")]
         public string ScriptFolder { get; set; }
+
+        [DisplayName("Modules Folder")]
+        [Description("The root folder where custom javascript module files are located. These are javascript files that are loaded as AMD modules. Default value is ~/Custom/Modules")]
+        public string ModulesFolder { get; set; }
 
         [DisplayName("Style Folder")]
         [Description("The root folder where custom CSS style files are located. Default value is ~/Custom/Style")]
@@ -27,6 +32,7 @@ namespace FX.CustomLoader
         public void Load()
         {
             this.LoadScripts();
+            this.LoadModules();
             this.LoadStyles();
         }
 
@@ -39,6 +45,22 @@ namespace FX.CustomLoader
             {
                 var fi = new FileInfo(file);
                 CurrentPage.ClientScript.RegisterClientScriptInclude(CurrentPage.GetType(), fi.Name.Replace(fi.Extension, "") + "_Script", GetVirtualPath(file));
+            }
+        }
+
+        private void LoadModules()
+        {
+            if (CurrentPage == null) return;
+
+            var subDirectories = GetSubDirectories(ModulesFolder);
+            foreach (var subDirectory in subDirectories)
+            {
+                var di = new DirectoryInfo(subDirectory);
+                var script = string.Format("require({{ packages: [{{ name: '{0}', location: '{1}'}}] }}", di.Name, GetVirtualPath(subDirectory));
+                if (di.GetFiles("*.js", SearchOption.TopDirectoryOnly).Count(x => x.Name.ToLower() == "main.js") > 0) script += string.Format(", ['{0}/main']", di.Name);
+                script += "); ";
+
+                CurrentPage.ClientScript.RegisterStartupScript(CurrentPage.GetType(), di.Name + "_Script", script, true);
             }
         }
 
@@ -59,6 +81,12 @@ namespace FX.CustomLoader
             return Directory.GetFiles(GetServerPath(VirtualPath), "*." + Extension, SearchOption.AllDirectories).ToList();
         }
 
+        public List<string> GetSubDirectories(string VirtualPath)
+        {
+            if (string.IsNullOrEmpty(VirtualPath) || !Directory.Exists(GetServerPath(VirtualPath))) return new List<string>();
+            return Directory.GetDirectories(GetServerPath(VirtualPath), "*", SearchOption.TopDirectoryOnly).ToList();
+        }
+
         private string GetServerPath(string VirtualPath)
         {
             return HttpContext.Current.Server.MapPath(VirtualPath);
@@ -66,7 +94,7 @@ namespace FX.CustomLoader
 
         private string GetVirtualPath(string PhysicalPath)
         {
-            return PhysicalPath.Replace(HttpContext.Current.Server.MapPath("~/"), "").Replace(@"\", "/");
+            return PhysicalPath.Replace(HttpContext.Current.Server.MapPath("~/"), HttpContext.Current.Request.ApplicationPath + "/").Replace(@"\", "/");
         }
 
         private Page CurrentPage
