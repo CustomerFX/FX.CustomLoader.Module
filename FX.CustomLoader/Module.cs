@@ -31,21 +31,9 @@ namespace FX.CustomLoader
 
         public void Load()
         {
-            this.LoadScripts();
             this.LoadModules();
+            this.LoadScripts();
             this.LoadStyles();
-        }
-
-        private void LoadScripts()
-        {
-            if (CurrentPage == null) return;
-
-            var files = GetFiles(ScriptFolder, "js");
-            foreach (var file in files)
-            {
-                var fi = new FileInfo(file);
-                CurrentPage.ClientScript.RegisterClientScriptInclude(CurrentPage.GetType(), fi.Name.Replace(fi.Extension, "") + "_Script", GetVirtualPath(file));
-            }
         }
 
         private void LoadModules()
@@ -61,6 +49,19 @@ namespace FX.CustomLoader
                 script += "); ";
 
                 CurrentPage.ClientScript.RegisterStartupScript(CurrentPage.GetType(), di.Name + "_Script", script, true);
+            }
+        }
+
+        private void LoadScripts()
+        {
+            if (CurrentPage == null) return;
+
+            var files = GetFiles(ScriptFolder, "js");
+            foreach (var file in files)
+            {
+                var fi = new FileInfo(file);
+                var script = string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>", GetVirtualPath(file));
+                CurrentPage.ClientScript.RegisterStartupScript(CurrentPage.GetType(), fi.Name.Replace(fi.Extension, "") + "_Script", script, false);
             }
         }
 
