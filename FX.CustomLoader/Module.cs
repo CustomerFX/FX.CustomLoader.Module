@@ -31,6 +31,9 @@ namespace FX.CustomLoader
 
         public void Load()
         {
+            // do not load on dialog pages (such as groupbuilder.aspx)
+            if (!string.IsNullOrEmpty(this.CurrentPage.MasterPageFile) && this.CurrentPage.MasterPageFile.ToLower().Contains("dialog.master")) return;
+
             this.LoadModules();
             this.LoadScripts();
             this.LoadStyles();
