@@ -153,14 +153,19 @@ namespace FX.CustomLoader
 
                     control.ID = config.ID;
                     if (string.IsNullOrEmpty(config.Title)) config.Title = config.ID;
-                    GetWorkspaceFromName(config.Workspace).Show(control, new SmartPartInfo(config.Title, config.Title));
+
+                    var workspace = GetWorkspaceFromName(config.Workspace);
+                    if (workspace != null) workspace.Show(control, new SmartPartInfo(config.Title, config.Title));
                 }
             }
         }
 
         private IWorkspace GetWorkspaceFromName(string WorkspaceName)
         {
-            return (IWorkspace)this.GetType().GetProperty(WorkspaceName, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this, null);
+            var prop = this.GetType().GetProperty(WorkspaceName, BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null) return null;
+
+            return (IWorkspace)prop.GetValue(this, null);
         }
 
         private List<string> GetFiles(string VirtualPath, string Extension)
