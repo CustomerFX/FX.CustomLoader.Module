@@ -11,6 +11,7 @@ namespace FX.CustomLoader.Configuration
         public string Title { get; set; }
         public string Workspace { get; set; }
         public string ShowInMode { get; set; }
+        public string[] EntityTypes { get; set; }
 
         public static FormConfiguration LoadFromFile(string FileName)
         {

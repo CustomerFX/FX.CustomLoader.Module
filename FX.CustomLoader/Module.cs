@@ -124,8 +124,9 @@ namespace FX.CustomLoader
          *      "ID": "mySmartPart",
          *      "SmartPart": "~/SmartParts/Account/MySmartPart",
          *      "Workspace": "DialogWorkspace",
-         *      "Title": "Title (optional)",
-         *      "ShowInMode": ""
+         *      "Title": "Title",  <- optional
+         *      "ShowInMode": "",
+         *      "EntityTypes": ["Account", "Contact"]  <- optional, omit to add form on all pages
          * }
          */
         private void LoadForms()
@@ -140,6 +141,8 @@ namespace FX.CustomLoader
                 {
                     if (string.IsNullOrEmpty(config.SmartPart) || string.IsNullOrEmpty(config.ID) || string.IsNullOrEmpty(config.Workspace)) continue;
                     if (!File.Exists(HttpContext.Current.Server.MapPath(config.SmartPart))) continue;
+
+                    if (config.EntityTypes != null && config.EntityTypes.Length > 0 && !config.EntityTypes.Contains(CurrentEntityType)) continue;
 
                     Control control;
                     try
@@ -193,6 +196,15 @@ namespace FX.CustomLoader
         private Page CurrentPage
         {
             get { return HttpContext.Current.Handler as Page; }
+        }
+
+        private string CurrentEntityType
+        {
+            get
+            {
+                var entityName = Path.GetFileNameWithoutExtension(HttpContext.Current.Request.Url.LocalPath);
+                return entityName.Substring(0, 1).ToUpper() + entityName.Substring(1).ToLower();
+            }
         }
     }
 }
