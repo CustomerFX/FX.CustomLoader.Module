@@ -122,10 +122,10 @@ namespace FX.CustomLoader
          * Sample Config (can be named anything.json)
          * {
          *      "ID": "mySmartPart",
-         *      "SmartPart": "~/SmartParts/Account/MySmartPart",
+         *      "SmartPart": "~/SmartParts/Account/MySmartPart.ascx",
          *      "Workspace": "DialogWorkspace",
          *      "Title": "Title",  <- optional
-         *      "ShowInMode": "",
+         *      "ShowInMode": "",  <- optional
          *      "EntityTypes": ["Account", "Contact"]  <- optional, omit to add form on all pages
          * }
          */
